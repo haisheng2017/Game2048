@@ -36,6 +36,60 @@ function newGame() {
     generateOneNumber();
 
 }
+document.addEventListener('touchmove',function (ev) {
+    ev.preventDefault();
+},false);
+
+document.addEventListener('touchstart',function (ev) {
+    startx=ev.touches[0].pageX ;
+    starty=ev.touches[0].pageY;
+
+});
+
+document.addEventListener('touchend',function (ev) {
+
+    endx=ev.changedTouches[0].pageX;
+    endy=ev.changedTouches[0].pageY;
+
+    var deltax=endx-startx;
+    var deltay=endy-starty;
+
+    if (Math.abs(deltax)<0.3*documentWidth && Math.abs(deltay)<0.3*documentWidth){
+        return;
+    }
+    //x
+    if (Math.abs(deltax)>=Math.abs(deltay)){
+        if (deltax>0){
+            //move right
+            if (moveRight()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }else{
+            //move left
+            if (moveLeft()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }
+    }
+    //y
+    else {
+        if (deltay>0){
+            //move down
+            if (moveDown()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }else {
+            //move up
+            if (moveUp()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }
+    }
+});
 
 
 function generateOneNumber() {
@@ -241,24 +295,28 @@ $(document).keydown(function (event) {
     switch (event.keyCode) {
         case 37 :
             if (moveLeft()) {
+                event.preventDefault();
                 setTimeout("generateOneNumber()", 210);
                 setTimeout("isGameOver()", 300);
             }
             break;
         case 38 :
             if (moveUp()) {
+                event.preventDefault();
                 setTimeout("generateOneNumber()", 210);
                 setTimeout("isGameOver()", 300);
             }
             break;
         case 39 :
             if (moveRight()) {
+                event.preventDefault();
                 setTimeout("generateOneNumber()", 210);
                 setTimeout("isGameOver()", 300);
             }
             break;
         case 40 :
             if (moveDown()) {
+                event.preventDefault();
                 setTimeout("generateOneNumber()", 210);
                 setTimeout("isGameOver()", 300);
             }
