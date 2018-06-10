@@ -281,7 +281,7 @@ function moveDown() {
 }
 
 function gameOver() {
-    alert("game over!")
+    alert("games over!")
 }
 
 function isGameOver() {
