@@ -11,10 +11,13 @@ $(function () {
 
 function prepareForMobile() {
 
+    console.log('hahaha');
     if(documentWidth>500){
         gridContainerWidth=500;
         cellSpace=20;
         cellSideLength=100;
+
+        console.log(documentWidth,cellSideLength,cellSpace,gridContainerWidth)
     }
     $('#grid-container').css('width', gridContainerWidth - 2 * cellSpace);
     $('#grid-container').css('height', gridContainerWidth - 2 * cellSpace);

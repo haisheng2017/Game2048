@@ -1,4 +1,4 @@
-package hao.game2048.Web;
+package hao.game2048.web;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
