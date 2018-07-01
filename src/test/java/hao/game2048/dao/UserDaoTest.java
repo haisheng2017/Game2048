@@ -25,7 +25,7 @@ public class UserDaoTest {
     public void saveTest() {
         User user = new User();
         user.setName("test");
-        user.setUrl("www.test.com");
+        user.setEmail("www.test.com");
         User result = userDao.save(user);
         assertNotNull(user.getId());
         System.out.println(user);

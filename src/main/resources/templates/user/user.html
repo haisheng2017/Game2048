@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1"/>
+    <title>MLH的小站</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/collapse.js}"></script>
+
+    <style type="text/css">
+        /* 自定义validator的错误信息样式 */
+        input.error {
+            border: 1px solid red;
+        }
+
+        label.error {
+
+            padding-left: 16px;
+
+            padding-bottom: 2px;
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/header :: nav}"></div>
+<div class="container-fluid">
+    <form th:action="@{/user}" method="post">
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" id="name" placeholder="Your Nick Name">
+        </div>
+
+        <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input type="text" class="form-control" name="birthday" id="birthday"
+                   placeholder="Your Birthday : 1990-01-31">
+        </div>
+
+
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">Rank</span>
+                <input type="text" class="form-control" name="rank" placeholder="0.0">
+                <span class="input-group-addon">Points</span>
+            </div>
+        </div>
+        <button id="submit" type="button" class="btn btn-default">Submit</button>
+    </form>
+</div>
+</body>
+
+<script type="text/javascript" th:src="@{/js/jquery/validate/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery/validate/locale/messages_zh.min.js}"></script>
+</html>
+
+<script type="text/javascript">
+    //jquery-validate.js -- 验证表单
+    $(function () {
+        //valid is a validate object -> valid.form()
+
+        //日期 自定义验证规则
+        $.validator.addMethod("isDate", function (value, element) {
+            var ereg = /^(\d{4})(-)(\d{2})(-)(\d{2})$/;
+            var r = value.match(ereg);
+            if (r == null || r.length !== 6) {
+                return false;
+            }
+            console.log(r);
+            var d = new Date(r[1], r[3] - 1, r[5]);
+            var result = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[5]);
+
+            return this.optional(element) || (result);
+        }, "请输入格式为yyyy-MM-dd并且有效的日期");
+
+        var valid = $("form").validate({
+            //rules : object,object
+            // key -> input name
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                birthday: {
+                    isDate: true
+                    //date: true  //会有bug，目测判断条件是是否大于31天，02-31也会算作正确的，只是检测日期普遍有效性T-T
+                },
+                rank: {
+                    number: true
+                },
+                name: {
+                    remote: {   //后台必须返回布尔值，不然就用 dataFilter: function (data) 改写
+                        url: "/user/name",     //后台处理程序
+                        type: "get",               //数据发送方式
+                        dataType: "json",           //接受数据格式
+                        data: {                     //要传递的数据
+                            "name": function () {
+                                return $("#name").val();
+                            }
+                        }
+                    }
+                }
+            },//错误信息提示
+            messages: {
+                name: {
+                    remote: "用户已经存在，请在想一个名字吧"
+                }
+            },
+
+            errorPlacement: function (error, element) {
+                if (element.attr('name') === "rank") {
+                    error.appendTo(element.parent().parent());
+                } else {
+                    error.appendTo(element.parent());   //默认位置
+                }
+            }
+        });
+        $("#submit").click(function () {
+
+            var form = $("form");
+            if (valid.form()) {
+                console.log("ok");
+            } else {
+                alert("check your form!");
+                return false;
+            }
+            var value = form.serializeArray(); //input必须有 name 属性 -> 序列化为json对象 | serialize() 序列化为字符串
+            console.log(value);
+            var url = form.attr('href');
+            $.post(url, value, function (result) {
+                alert(result.me);
+            });
+        });
+    });
+
+</script>

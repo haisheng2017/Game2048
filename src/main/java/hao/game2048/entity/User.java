@@ -1,6 +1,10 @@
 package hao.game2048.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * create by hao 2018/6/21
@@ -22,7 +26,41 @@ public class User {
 
     private String name;
 
-    private String url;
+    private String email;
+
+    private Double rank;
+    //post 表单用下面的 get query parameters 用上面的
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birthday;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", rank=" + rank +
+                ", birthday=" + birthday +
+                '}';
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
+    }
+
 
     public Integer getId() {
         return id;
@@ -40,20 +78,12 @@ public class User {
         this.name = name;
     }
 
-    public String getUrl() {
-        return url;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                '}';
-    }
 }
